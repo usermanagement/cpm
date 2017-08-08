@@ -1,0 +1,124 @@
+<!doctype html>
+<html><head>
+    <meta charset="utf-8">
+    <title>BLOCKS - Bootstrap Dashboard Theme</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Carlos Alvarez - Alvarez.is">
+
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/font-style.css" rel="stylesheet">
+    <link href="css/flexslider.css" rel="stylesheet">
+
+    <script type="text/javascript" src="js/jquery.js"></script>    
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript" src="js/lineandbars.js"></script>
+    
+  <script type="text/javascript" src="js/dash-charts.js"></script>
+  <script type="text/javascript" src="js/gauge.js"></script>
+  
+  <!-- NOTY JAVASCRIPT -->
+  <script type="text/javascript" src="js/noty/jquery.noty.js"></script>
+  <script type="text/javascript" src="js/noty/layouts/top.js"></script>
+  <script type="text/javascript" src="js/noty/layouts/topLeft.js"></script>
+  <script type="text/javascript" src="js/noty/layouts/topRight.js"></script>
+  <script type="text/javascript" src="js/noty/layouts/topCenter.js"></script>
+  
+  <!-- You can add more layouts if you want -->
+  <script type="text/javascript" src="js/noty/themes/default.js"></script>
+    <!-- <script type="text/javascript" src="assets/js/dash-noty.js"></script> This is a Noty bubble when you init the theme-->
+  <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+  <script src="js/jquery.flexslider.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="js/admin.js"></script>
+      
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+      }
+    </style>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+   
+
+    <!-- Google Fonts call. Font Used Open Sans & Raleway -->
+  <link href="http://fonts.googleapis.com/css?family=Raleway:400,300" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#btn-blog-next").click(function () {
+            $('#blogCarousel').carousel('next')
+        });
+        $("#btn-blog-prev").click(function () {
+            $('#blogCarousel').carousel('prev')
+        });
+
+        $("#btn-client-next").click(function () {
+            $('#clientCarousel').carousel('next')
+        });
+        $("#btn-client-prev").click(function () {
+            $('#clientCarousel').carousel('prev')
+        });
+
+    });
+
+    $(window).load(function () {
+
+        $('.flexslider').flexslider({
+            animation: "slide",
+            slideshow: true,
+            start: function (slider) {
+                $('body').removeClass('loading');
+            }
+        });
+    });
+
+</script>    
+  </head>
+  <body>
+  
+    <div class="container" style="width: 80%">
+      <a style="padding: 3px 3px 3px 2px;background: white;" href="#addCard" role="button" class="btnnew" data-toggle="modal"><i class="icon-user icon-white"></i> <strong style="color: black;"> + Add </strong></a>
+      <span style="margin-left: 40%"> <strong style="color: #c68c53;font-size: 16px;">Teams</strong></span>
+      <a role="button" class="btnnew accordion-toggle" data-toggle="collapse" href=".collapseOne" style="float: right;padding: 0px 3px 0px 2px;background: white;"><i class="icon-user icon-white"></i> <strong style="color: black;"> . . . </strong></a>
+      <hr style="margin-top: -1%">
+      <%a=@company.teams + @company.teams%>
+      <%a.each_with_index do |team, index|%>
+        <a href=<%=company_team_path(@company, team)%> class="dash-unit team-card fs1 accordion-body collapse in collapseOne" id=<%=team.id.to_s%>>
+          <dtitle>Team <%=index+1%></dtitle>
+          <hr>
+            <h3><%=team.name%></h3>
+            <br>
+        </a>
+      <%end%>
+    </div>
+
+    <div class="modal fade" id="addCard" tabindex="-1" role="dialog" aria-labelledby="addCardLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Add Team</h4>
+          </div>
+          <div class="modal-body">
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+                
+  </body>
+</html>
+

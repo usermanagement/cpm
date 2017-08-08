@@ -1,0 +1,44 @@
+<script>
+  $(function () {
+    $('#<%=@subcomment.id%>-edit-subcomment-modal').modal();
+    $('.employee_subcomment_description').on('keypress',function(){
+      $(this).css('height','auto');
+      $(this).height(this.scrollHeight);
+    });
+    $('.employee_subcomment_description').keypress(function(e){
+      if(e.which == 13){
+        $(this).closest('form').submit();
+        $('.modal-header button.close').trigger('click');
+       }
+      });
+  });
+</script>
+<div style="overflow-y: auto;">
+  <div id="<%=@subcomment.id%>-edit-subcomment-modal" class="modal fade colored-header" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Edit Reply</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body" style="max-height: 450px;overflow-y: auto;">
+          <%= form_for @subcomment, remote: true, url: company_employee_post_comment_path(@company, @employee, @post, @subcomment), html: {class: 'form-horizontal', id: 'edit-subcomment-form'} do |f| %>
+            <%= f.hidden_field :parent_comment, value: @comment.id%>
+            <div class="col-md-12 user-post" style="margin-top: 0px;">
+              <div class="image" style="max-height: 48px; max-width: 48px;">
+                <% src = "profpic_#{@employee.gender.downcase}_index.jpg" %>
+                <% src = @employee.user.image_url(:thumb) if (@employee.user.image_url rescue false) %>
+                <%= image_tag src, size: "48x48", alt: " "%>
+              </div>
+              <div class="post-box" style="float:right;">
+                <%=f.text_area :description, class: "form-control employee_subcomment_description", placeholder: "Press Enter to Write a reply..", size: "3x2", style:"overflow:hidden;resize: none;",id: "#{@subcomment.id.to_s}-input"%>
+                <span style="display: none;"><%=f.submit%></span>
+                <span style="float: right;">Press Enter to Write a Reply</span>
+              </div>
+            </div>
+          <%end%>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

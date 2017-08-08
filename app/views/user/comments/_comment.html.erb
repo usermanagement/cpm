@@ -1,0 +1,143 @@
+<script>
+  $(function () {
+      $('.comment-icon').unbind().click(function() {
+          $(this).parent().find('.comment-btn').click();
+          $(this).parent().find('.subcomment-btn').click();
+      });
+    var showWord = 36;
+    var ellipsestext = "...";
+    var moretext = "show more";
+    var lesstext = "show less";
+    
+    $('#<%=comment.id%>').find('.more').each(function() {
+        var content = $(this).html();
+        if(content.split(' ').length > showWord) {
+ 
+            var limitedContent = content.split(' ').slice(0, showWord).join(' ')  
+            var hiddenContent = content.split(' ').slice(showWord, content.split(' ').length).join(' ')
+
+            var html = limitedContent + '<span class="moreellipses">' + ellipsestext + '</span><span class="morecontent"><span>' + ' ' + hiddenContent + '</span><a href="" class="morelink">' + moretext + '</a></span>';
+ 
+            $(this).html(html);
+        }
+    });
+ 
+    $('#<%=comment.id%>').find(".morelink").click(function(){
+        if($(this).hasClass("less")) {
+            $(this).removeClass("less");
+            $(this).html(moretext);
+        } else {
+            $(this).addClass("less");
+            $(this).html(lesstext);
+        }
+        $(this).parent().prev().toggle();
+        $(this).prev().toggle();
+        return false;
+    });
+    $('.load-more-replies').hide();
+    $('.loading-comment-indicator').hide();
+    $('#<%=comment.id%>').find('.subcomments_count').text(<%=comment.subcomments.count%>)
+    $('#<%=@post.id%>').find('.comments_count').text(<%=@post.comments.where(parent_comment_id: nil).count%>)
+    $('.employee_subcomment_description').unbind().keypress(function(e){
+      $(this).css('height','auto');
+      $(this).height(this.scrollHeight);
+      if(e.which == 13){
+        $(this).closest('form').submit();
+       }
+      });
+    $('.user-comment-subcomment').hide();
+    $('.subcomment-post').hide();
+    $('.subcomment-btn').unbind().click(function() {
+      $(this).parents('.comment-post').next().find('.user-comment-subcomment').toggle();
+      $(this).parents('.comment-post').next().parent().next().find('.subcomment-post').slice(0,3).toggle();
+      $(this).parents('.comment-post').next().parent().next().find('.subcomment-post').slice(3).hide();
+      if ($(this).parents('.comment-post').next().parent().next().find('.subcomment-post:visible').length) {
+        $(this).parents('.comment-post').next().parent().next().find('.load-more-replies').show();  
+      } else {
+        $(this).parents('.comment-post').next().parent().next().find('.load-more-replies').hide();
+      }
+      
+    })
+    $('.load-more-comments').unbind().click(function() {
+      $(this).parent().find('.comment-post:hidden').slice(0,3).show();
+      $(this).find('.loading-comment-indicator').show().delay(100).fadeOut();
+      if (!$(this).parent().find('.comment-post:hidden').length) {
+        $(this).toggle();
+      }
+    });
+  });
+</script>
+<%@comment = comment if comment%>
+<%if @comment.post.comments.where(parent_comment_id: nil).count>3 && @comment.post.comments.where(parent_comment_id: nil).order(created_at: :desc).first.eql?(@comment)%>
+  <div class="load-more-comments col-md-6">
+    <%= link_to 'Load more comments', '', remote: true, style: "color:#fe8637"%>
+    <span class="loading-comment-indicator">
+    <%= image_tag("comment_loader.gif", class: "loading-indicator") %>
+    </span>
+  </div>
+<%end%>
+<div id=<%=@comment.id%>>
+  <div class="col-md-12 comment-post " style="padding-left: 0px;">
+    <div class="image col-md-4" style="max-height: 40px; max-width: 40px;">
+      <% src = "profpic_#{@comment.user.gender.downcase}_index.jpg" %>
+      <% src = @comment.user.image_url(:thumb) if (@comment.user.image_url rescue false) %>
+      <%= image_tag src, size: "40x40", alt: " "%>
+    </div>
+    <div class="col-md-12" style="margin-left: 15px;width: 475px;word-wrap: break-word;">
+      <span><b style="color: #fe8637"><%=@comment.user.name%></b></span>
+      <% if @comment.user == @user || current_user.is_admin || @post.user == current_user %>
+        <ul class="nav navbar-nav navbar-right edit-comment pull-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="background-color: #f7f7f7;;padding: 2px;">
+            <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+              <% if @comment.user == current_user %>
+                <li><%= link_to 'Edit comment', edit_company_team_post_comment_path(@company, @post.team, @post, @comment.id.to_s), remote: true %></li>
+              <%end%>
+                <li><%= link_to 'Delete comment', company_team_post_comment_path(@company, @post.team, @post, @comment.id.to_s), method: :delete, remote: true %></li>
+              </ul>
+          </li>
+        </ul>
+      <%end%>
+      <br>
+      <span class="more"><%=@comment.description%></span>
+      <div class="comment-actions col-md-12">
+        <%@user_comment_likes = User::Like.where(comment_id: @comment.id, user_id: current_user.id)%>
+        <%if @user_comment_likes.present?%>
+          <%@like=@user_comment_likes.first.id.to_s%>
+        <%end%>
+        <% if @user_comment_likes.count.eql?(0) %>
+          <%=link_to 'Like', user_likes_path(current_user), method: :post, remote: true, class: "like-btn"%></span>
+        <% else%>
+          <%=link_to 'Unlike', user_like_path(current_user, @like), method: :delete, remote: true, class: "like-btn"%></span>
+        <%end%>
+        <%=link_to 'Reply', '', remote: true, class: "subcomment-btn show_comment"%>
+        <%=link_to '', user_show_all_likes_path(current_user, @comment.id.to_s), remote: true, class: "fa fa-thumbs-o-up thumsup-icon", style: "color: black"%>
+        <span class="likes_count"><%=User::Like.where(comment_id: @comment.id).count%></span>
+        <%=link_to '', '', remote: true, class: "fa fa-comment-o comment-icon", style: "color: black"%>
+        <span class="subcomments_count"></span>
+        <%debugger%>
+        <span style="margin-left: 9px;"><%=time_ago_in_words(@comment.created_at)%></span>
+      </div>
+    </div>
+  </div>
+  <%@subcomment= @comment.subcomments.new%>
+  <%= form_for @subcomment, remote: true, url: company_team_post_comments_path(@company, @post.team, @post), html: {class: 'form-horizontal', id: 'create-subcomment-form'} do |f| %>
+    <%= f.hidden_field :parent_comment, value: @comment.id%>
+    <div class="col-md-12 user-comment-subcomment" style="margin-top: 0px;">
+      <div class="image" style="max-height: 30px; max-width: 30px;">
+        <% src = "profpic_#{current_user.gender.downcase}_index.jpg" %>
+        <% src = current_user.image_url(:thumb) if (current_user.image_url rescue false) %>
+        <%= image_tag src, size: "30x30", alt: " "%>
+      </div>
+      <div class="post-box col-md-12" style="float:right;">
+        <%=f.text_area :description, class: "form-control employee_subcomment_description", placeholder: "Press Enter to Write a reply..", size: "3x1", style:"overflow:hidden;resize: none;"%><br>
+        <span style="display: none;"><%=f.submit%></span>
+      </div>
+    </div>
+  <%end%>
+</div>
+
+<div id="subcomment_data<%=@comment.id%>">
+  <%= render partial: "employee/comments/subcomment", collection: @comment.subcomments.order(created_at: :asc), as: :subcomment %>
+</div>

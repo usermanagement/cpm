@@ -1,0 +1,149 @@
+<style>
+  a:focus, a:hover, a:active {
+    color: #fe8637;
+  }
+</style>
+<script>
+  $(document).on('turbolinks:load', function() {
+    text = ""
+    $('#<%=post.id%>').find('.inner').each(function() { 
+     text += $(this).text();
+     text += " " 
+    })
+    $('#<%=post.id%>').find('.inner').first().replaceWith($("<div>", {class: 'more', text: text}));
+    $('#<%=post.id%>').find('.inner').remove();
+    var showWord = 75;
+    var ellipsestext = "...";
+    var moretext = "show more";
+    var lesstext = "show less";
+    
+    $('#<%=post.id%>').find('.more').each(function() {
+        var content = $(this).html();
+        if(content.split(' ').length > showWord) {
+ 
+            var limitedContent = content.split(' ').slice(0, showWord).join(' ')  
+            var hiddenContent = content.split(' ').slice(showWord, content.split(' ').length).join(' ')
+
+            var html = limitedContent + '<span class="moreellipses">' + ellipsestext + '</span><span class="morecontent"><span>' + ' ' + hiddenContent + '</span><a href="" class="morelink">' + moretext + '</a></span>';
+ 
+            $(this).html(html);
+        }
+    });
+    $('#<%=post.id%>').find(".morelink").click(function(){
+        if($(this).hasClass("less")) {
+            $(this).removeClass("less");
+            $(this).html(moretext);
+        } else {
+            $(this).addClass("less");
+            $(this).html(lesstext);
+        }
+        $(this).parent().prev().toggle();
+        $(this).prev().toggle();
+        return false;
+    });
+ debugger
+    $('.employee_comment_description').unbind().keypress(function(e){
+      $(this).css('height','auto');
+      $(this).height(this.scrollHeight);
+      if(e.which == 13){
+        $(this).closest('form').submit();
+      }
+    });
+    
+    $('.load-more-comments').hide();
+    $('.user-comment-post').hide();
+    $('.comment-post').hide();
+    $('.comment-btn').unbind().click(function() {
+      $(this).parents('.user-post').next().find('.user-comment-post').toggle();
+      $(this).parents('.user-post').next().parent().next().find('.comment-post').slice(0,3).toggle();
+      $(this).parents('.user-post').next().parent().next().find('.comment-post').slice(3).hide();
+      $(this).parents('.user-post').parent().next().find('.subcomment-post').hide();
+      $(this).parents('.user-post').parent().next().find('.user-comment-subcomment').hide();
+      if ($(this).parents('.user-post').next().parent().next().find('.comment-post:visible').length) {
+        $(this).parents('.user-post').next().parent().next().find('.load-more-comments').show();
+      } else {
+        $(this).parents('.user-post').next().parent().next().find('.load-more-comments').hide();
+      }
+    })
+
+  });
+</script>
+<%@post = post if post%>
+<div class="user-post " style="padding-left: 0px">
+  <div class="image col-md-4" style="max-height: 48px; max-width: 48px;">
+    <%= image_tag '', size: "48x48", alt: " "%>
+  </div>
+  <div class="col-md-12" style="margin-left: 15px;word-wrap: break-word;">
+    <span><b style="color: #fe8637"><%=@post.user.name%></b> shared an update:</span>
+    <% if @post.user == current_user ||  current_user.is_admin %>
+      <ul class="nav navbar-nav navbar-right edit-post pull-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="background-color: white;padding: 2px;">
+          <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+            <% if @post.user == current_user %>
+              <li><%= link_to 'Edit Post', edit_company_team_post_path(@company, @post.team, @post), remote: true %></li>
+            <%end%>
+              <li><%= link_to 'Delete Post', company_team_post_path(@company, @post.team, @post), method: :delete, remote: true %></li>
+            </ul>
+        </li>
+      </ul>
+    <%end%>
+    <div style="margin-bottom: 8px;"><%=time_ago_in_words(@post.created_at) + " ago"%>&nbsp;&nbsp;<i class="fa fa-globe"></i></div>
+      <%@post.description.split(' ').each do |desc|%>
+        <%object = LinkThumbnailer.generate(desc) rescue nil%>
+        <%if desc.match(/(http).*[.](JPG)$|(http).*[.](tif)$|(http).*[.](png)$|(http).*[.](jpg)$|(http).*[.](bmp)$|(http).*[.](gif)$|(http).*[.](jpeg)$/i)%>
+           <div><img poster="" src=<%=desc%> style="max-width: 312px;max-height: 161px;" controls="true"></img></div><br>
+        <%elsif desc.match(/(http).*[.](mp4)$|(http).*[.](webm)$|(http).*[.](flv)$|(http).*[.](vob)$|(http).*[.](mpg)$|(http).*[.](mp2)$|(http).*[.](mpeg)$|(http).*[.](mpe)$|(http).*[.](mpv)$|(http).*[.](mpg)$|(http).*[.](mpeg)$|(http).*[.](m2v)$|(http).*[.](m4p)$/i)%>
+           <div><video poster="" src=<%=desc%> style="max-width: 312px;max-height: 161px;" controls="true"></video></div><br>
+        <%elsif object%>
+          <br>
+          <span style="font-weight: bold;"><%=object.title%></span> <br> 
+          <a style="color:#33adff;" href=<%=desc%> target="_blank"><span><%=object.description.split(' ').slice(0, 25).join(' ')%></span></a> <br><br>
+          <%if object.videos.first %>
+            <%if object.videos.first.src.include?('www.youtube.com')%>
+              <div><iframe style="max-width: 312px;max-height: 161px;" src=<%=object.videos.first.src%> frameborder="0" allowfullscreen></iframe></div><br>
+            <%else%>
+              <div><video poster="" src=<%=object.videos.first.src%> style="max-width: 312px;max-height: 161px;" controls="true"></video></div><br>
+            <%end%>
+          <%elsif object.images.first %>
+            <div><%=image_tag object.images.first.src, alt: " ", style: "max-width: 312px;max-height: 161px;"%></div><br>
+          <%end%>
+        <%else%>
+          <span class="inner"><%=desc%></span>
+        <%end%>
+      <%end%>
+    <div class="post-actions col-md-12">
+      <%@employee_post_likes = User::Like.where(post_id: @post.id, user_id: current_user.id)%>
+      <%if @employee_post_likes.present?%>
+        <%@like=@employee_post_likes.first.id.to_s%>
+      <%end%>
+      <% if @employee_post_likes.count.eql?(0) %>
+        <%=link_to 'Like', user_likes_path(current_user, @post), method: :post, remote: true, class: "like-btn"%></span>
+      <% else%>
+        <%=link_to 'Unlike', user_like_path(current_user, @like, @post), method: :delete, remote: true, class: "like-btn"%></span>
+      <%end%>
+      <%=link_to 'Comment', '', remote: true, class: "comment-btn show_comment"%>
+      <%=link_to '', user_show_all_likes_path(current_user, @post), remote: true, class: "fa fa-thumbs-o-up thumsup-icon", style: "color: black"%>
+      <span class="likes_count"><%=User::Like.where(post_id: @post.id).count%></span>
+      <%=link_to '', '', remote: true, class: "fa fa-comment-o comment-icon", style: "color: black"%>
+      <span class="comments_count"><%=User::Comment.where(post_id: @post.id, parent_comment_id: nil).count%></span>
+    </div>
+  </div>
+</div>
+<%@comment= @post.comments.new%>
+ <%= form_for @comment, remote: true, url: company_team_post_comments_path(@company, @post.team, @post), html: {class: 'form-horizontal', id: 'create-comment-form'} do |f| %>
+  <div class="user-comment-post" style="margin-top: 0px;">
+    <div class="image" style="max-height: 53px; max-width: 48px;">
+      <%= image_tag '', size: "48x53", alt: " "%>
+    </div>
+    <div class="post-box" style="float:right;">
+      <%=f.text_area :description, class: "form-control employee_comment_description", placeholder: "Press Enter to Add Comment..", size: "3x2", style:"overflow:hidden;resize: none;width:96%"%>
+      <span style="display: none;"><%=f.submit%></span>
+    </div>
+  </div>
+<%end%>
+
+<div id="comment_data<%=@post.id%>" style="max-height: 453px;width: 91%;overflow-y: auto;">
+  <%= render partial: "user/comments/comment", collection: @post.comments.where(parent_comment_id: nil).order(created_at: :asc), as: :comment %>
+</div>

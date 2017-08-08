@@ -1,0 +1,7 @@
+$modal = $("#show-comments-modal");
+$modal.modal();
+<%if @post_item%>
+  $modal.find('.modal-body').html("<%= j render :partial => 'shared/like_comment_data', collection: Employee::Comment.all.where(post_id: @post_item.id).map(&:employee).uniq, as: :employee %>");
+<% else %>
+  $modal.find('.modal-body').html("<%= j render :partial => 'shared/like_comment_data', collection: Employee::Comment.all.where(comment_id: @comment_item.id).map(&:employee).uniq, as: :employee %>");
+<%end%>

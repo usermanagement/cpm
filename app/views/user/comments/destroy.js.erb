@@ -1,0 +1,18 @@
+<%if @comment.parent_comment.present?%>
+  parent_id = '<%=@comment.parent_comment_id%>'
+  $('#<%=@comment.parent_comment.try(:id)%>').find('.subcomments_count').text(<%=@comment.parent_comment.try(:subcomments).try(:count)%>)
+  <%if @comment.parent_comment.subcomments.count<4 %>
+    $('#subcomment_data<%=@comment.parent_comment.id%>').find('.load-more-replies').remove();
+  <%end%>
+  $('#<%=@comment.id%>').remove();
+  $('#subcomment_data<%=@comment.parent_comment.id%>').find('.subcomment-post').hide();
+  $('#subcomment_data<%=@comment.parent_comment.id%>').find('.subcomment-post').slice(0,3).show();
+<%else%>
+  $('#<%=@post.id%>').find('.comments_count').text(<%=@post.comments.where(parent_comment_id: nil).count%>)
+  <%if @comment.post.comments.where(parent_comment_id: nil).count<4 %>
+    $('#comment_data<%=@comment.post.id%>').find('.load-more-comments').remove();
+  <%end%>
+  $('#<%=@comment.id%>').remove();
+  $('#comment_data<%=@comment.post.id%>').find('.comment-post').hide();
+  $('#comment_data<%=@comment.post.id%>').find('.comment-post').slice(0,3).show();
+<%end%>

@@ -1,0 +1,60 @@
+id = '<%=params[:id]%>';
+$('#empty').html("<%= j render partial: 'form', locals: { :@post => Company::Post.find(params[:id]) } %>");
+$('#<%=@post.id%>-edit-post-modal').modal();
+$('.edit-post-form').unbind().keypress(function(e){
+  $(this).css('height','auto');
+  $(this).height(this.scrollHeight);
+  });
+$('#thumbnail-div').hide();
+$('.modal').click(function() {
+  if ($('.multiselect-container.dropdown-menu').is(':visible')) {
+    $(this).find('.modal-body').css('min-height','113px');
+    $(this).closest('.modal').find('.modal-button').show();
+  } 
+});
+$('.save-custom-btn').find('a').click(function() {
+  if ($('#<%=@post.id%>-share-modal').find('.modal-body').find('button.multiselect.dropdown-toggle').attr('title')=="None selected") {
+    $('.save-custom-btn').parent().prev().children('.error').show();
+  } else {
+    emp_array = $('#<%=@post.id%>-share-modal').find('.modal-body').find('button.multiselect.dropdown-toggle').attr('title')
+    $('.save-custom-btn').parent().prev().children('.error').hide();
+    $('.edit_custom_name_field').val(emp_array);
+    $('#<%=@post.id%>-share-modal').find('.close').click();
+    $('#<%=@post.id%>-edit-post-modal').show();
+    $('.edit-share-btn').find('a').text('Specific People');
+    $('.edit-share-btn').find('i').attr('class', 'fa fa-asterisk');
+  }
+});
+$('a.load-more-posts').hide();
+$('.share_status').keypress(function(e){
+  $(this).css('height','auto');
+  $(this).height(this.scrollHeight);
+ });
+$('.edit-post-btn').unbind().click(function() {
+  $('#thumbnail-div').hide();
+  $('#thumbnail-div').empty();
+  $('.modal-header button.close').trigger('click');
+  $('.modal-backdrop').fadeOut();
+  $(this).parents('.share-post').find('.share_with_field').val($(this).parent().next().text().trim());
+  $('.share-post').find('.status-thumbnail').remove();
+  $('.modal-header button.close').trigger('click');
+  $('.modal-backdrop').fadeOut();
+});
+
+$('.edit-post-form').bind('input propertychange', function() {
+  if(!$('#thumbnail-div').find('.status-thumbnail').length) {
+    var _this = this;
+    request = $.ajax({
+      type: "GET",
+      url: "/thumbnail",
+      data: $(_this).val(),
+      success: function (result) {
+      },
+      error: function (){
+      }
+     });
+    } else if($('.edit-post-form').val()=="") {
+      $('#thumbnail-div').empty();
+      $('#thumbnail-div').hide();
+    }
+  });

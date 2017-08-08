@@ -1,0 +1,37 @@
+<div style="overflow-y: auto;">
+  <div id="<%=@post.id%>-edit-post-modal" class="modal fade colored-header" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Edit Post</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body" style="min-height: 125px;overflow-y: auto;">
+          <%= form_for @post, remote: true, url: company_team_posts_path(@company, @post.team, @post), html: {class: 'form-horizontal', id: 'post-form'} do |f| %>
+            <div>
+              <div class="col-md-12 user-post" style="margin: 0px;">
+                <div class="image" style="max-height: 53px; max-width: 48px;">
+                  <%= image_tag '', size: "48x53", alt: " "%>
+                </div>
+                <div class="post-box">
+                  <%=f.text_area :description, class: "form-control edit-post-form", placeholder: "Share an update..", size: "3x2", style:"resize: none;", id: "#{@post.id.to_s}-input"%>
+                </div>
+              </div>
+              <div class="col-md-12 share-post">
+                <div>
+                  <span><%=f.submit 'Update', class: 'edit-post-btn'%></span>
+                </div>
+              </div>
+              <div class="col-mda-12" id ="thumbnail-div">
+            </div>
+          <%end%>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+    $('.edit-post-form').trigger('propertychange');
+</script>

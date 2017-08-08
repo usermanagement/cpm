@@ -1,0 +1,15 @@
+<% if params.require(:user_comment).permit(:parent_comment).present?%>
+  parent_id = '<%=params.require(:user_comment).permit(:parent_comment).values[0]%>'
+  $('#subcomment_data'+parent_id).find('.load-more-replies').remove();
+  $('#subcomment_data'+parent_id).prepend('<%= j render partial: 'subcomment', locals: { :subcomment => @comment } %>');
+  $('#subcomment_data'+parent_id).find('.subcomment-post').hide();
+  $('#subcomment_data'+parent_id).find('.subcomment-post').slice(0,3).show();
+  $('.employee_subcomment_description').val('')
+<%else%>
+  id = '<%=params[:post_id]%>';
+  $('#comment_data'+id).find('.load-more-comments').remove();
+  $('#comment_data'+id).prepend('<%= j render @comment %>');
+  $('#comment_data'+id).find('.comment-post').hide();
+  $('#comment_data'+id).find('.comment-post').slice(0,3).show();
+  $('.employee_comment_description').val('')
+<%end%>

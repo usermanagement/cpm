@@ -1,0 +1,77 @@
+<div class="col-md-12" style="text-align: center;color: #c68c53;margin-top: -3%"><h2><%=@team.name%></h2></div>
+<br>
+<div class="container" style="width: 80%">
+  <a href=<%=company_team_posts_path(@company, @team)%> class="dash-unit fs1">
+    <dtitle>Campfire</dtitle>
+    <hr>
+    <div class="info-user">
+      <%=image_tag 'campfire.png', size: '100x100'%>
+    </div>
+    <br>
+    <div>
+      Chat casually with the group, ask random quesions and share stuff
+    </div>
+  </a>
+  <a class="dash-unit fs1">
+    <dtitle>Message Board</dtitle>
+    <hr>
+      <div class="info-user">
+      <%=image_tag 'message_board.jpg', size: '100x100'%>
+    </div>
+    <br>
+    <div>
+      Post announcements, ideas, progress, updates etc.
+    </div>
+  </a>
+  <a class="dash-unit fs1">
+    <dtitle>To-dos</dtitle>
+    <hr>
+      <div class="info-user">
+      <%=image_tag 'todo.jpg', size: '100x100'%>
+    </div>
+    <br>
+    <div>
+      Make list of work that needs to get done, assign tasks, set deadlines
+    </div>
+  </a>
+  <a class="dash-unit fs1">
+    <dtitle>Schedule</dtitle>
+    <hr>
+      <div class="info-user">
+      <%=image_tag 'schedule.png', size: '100x100'%>
+    </div>
+    <br>
+    <div>
+      Set important dates or share a schedule.
+    </div>
+  </a>
+  <a class="dash-unit fs1">
+    <dtitle>Check-ins</dtitle>
+    <hr>
+      <div class="info-user">
+      <%=image_tag 'check_in.png', size: '100x100'%>
+    </div>
+    <br>
+    <div>
+      Create recurring questions, so you dont have to pester your team about updates
+    </div>
+  </a>
+  <a class="dash-unit fs1">
+    <dtitle>Docs & Files</dtitle>
+    <hr>
+      <div class="info-user">
+      <%=image_tag 'doc_file.jpg', size: '100x100'%>
+    </div>
+    <br>
+    <div>
+      Share doc, files, links and organise them
+    </div>
+  </a>
+</div>
+
+<style>
+  .dash-unit {
+    width: 230px;
+    height: 250px;
+  }
+</style>

@@ -1,0 +1,9 @@
+<%if @comment.parent_comment.present?%>
+  parent_id = '<%=@comment.parent_comment_id%>'
+  id = '<%=params[:id]%>';
+  $('#empty').html("<%= j render partial: 'subcomment_form', locals: { :@subcomment => Employee::Comment.find(params[:id]) } %>");
+<%else%>
+  id = '<%=params[:post_id]%>';
+  id = '<%=params[:id]%>';
+  $('#empty').html("<%= j render partial: 'form', locals: { :@comment => Employee::Comment.find(params[:id]) } %>");
+<%end%>

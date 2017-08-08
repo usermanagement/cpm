@@ -1,0 +1,11 @@
+$('body').removeClass('modal-open');
+$('.modal-backdrop').hide();
+<%if @comment.parent_comment.present?%> 
+  parent_id = '<%=@comment.parent_comment_id%>'
+  $('#<%=@comment.parent_comment.try(:id)%>').find('.subcomments_count').text(<%=@comment.parent_comment.try(:subcomments).try(:count)%>)
+  $('#subcomment_data'+parent_id).html('<%= j render partial: 'subcomment', collection: @comment.parent_comment.subcomments.order(created_at: :desc), as: :subcomment %>');
+<%else%>
+  id = '<%=params[:post_id]%>';
+  $('#<%=@post.id%>').find('.comments_count').text(<%=@post.comments.where(parent_comment_id: nil).count%>)
+  $('#comment_data'+id).html('<%= j render partial: :comment, collection: @post.comments.where(parent_comment_id: nil).order(created_at: :desc), as: :comment %>');
+<%end%>

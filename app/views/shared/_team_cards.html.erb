@@ -1,0 +1,53 @@
+<div class="col-md-12" style="text-align: center;color: #c68c53;margin-top: -2%;margin-bottom: -1%"><h4><%=link_to @team.name, company_team_path(@company, @team)%></h4></div>
+<br>
+<div class="container">
+  <a href=<%=company_team_posts_path(@company, @team)%> class="inner-dash-unit dash-unit fs1">
+    <dtitle>Campfire</dtitle>
+    <hr style="margin:0">
+    <div class="info-user">
+      <%=image_tag 'campfire.png', size: '30x30'%>
+    </div>
+  </a>
+  <a class="inner-dash-unit dash-unit fs1">
+    <dtitle>Message Board</dtitle>
+    <hr style="margin:0">
+      <div class="info-user">
+      <%=image_tag 'message_board.jpg', size: '30x30'%>
+    </div>
+  </a>
+  <a class="inner-dash-unit dash-unit fs1">
+    <dtitle>To-dos</dtitle>
+    <hr style="margin:0">
+      <div class="info-user">
+      <%=image_tag 'todo.jpg', size: '30x30'%>
+    </div>
+  </a>
+  <a class="inner-dash-unit dash-unit fs1">
+    <dtitle>Schedule</dtitle>
+    <hr style="margin:0">
+      <div class="info-user">
+      <%=image_tag 'schedule.png', size: '30x30'%>
+    </div>
+  </a>
+  <a class="inner-dash-unit dash-unit fs1">
+    <dtitle>Check-ins</dtitle>
+    <hr style="margin:0">
+      <div class="info-user">
+      <%=image_tag 'check_in.png', size: '30x30'%>
+    </div>
+  </a>
+  <a class="inner-dash-unit dash-unit fs1">
+    <dtitle>Docs & Files</dtitle>
+    <hr style="margin:0">
+      <div class="info-user">
+      <%=image_tag 'doc_file.jpg', size: '30x30'%>
+    </div>
+  </a>
+</div>
+
+<style>
+  .inner-dash-unit {
+    width: 11%;
+    height: 70px;
+  }
+</style>

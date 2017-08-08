@@ -1,0 +1,38 @@
+<%=render partial: 'shared/team_cards'%>
+<div id="empty"></div>
+<div class="col-md-12 container" style="margin-bottom: 5%">
+  <div class="col-md-9 col-md-offset-1" style="margin-bottom: 5%;">
+    <% @post= @team.posts.new %>
+    <%= form_for @post, remote: true, url: company_team_posts_path(@company, @team), html: {class: 'form-horizontal', id: 'create-post-form'} do |f| %>
+        <div>
+          <div class="col-md-12 user-post">
+            <div class="image">
+              <%= image_tag '', size: "64x72", alt: " " %>
+            </div>
+            <div class="post-box">
+              <%= f.text_area :description, class: "form-control share_status", placeholder: "Share an update..", size: "3x3", style: "overflow:hidden;resize: none;" %>
+            </div>
+          </div>
+          <div class="col-md-12 share-post">
+            <div>
+              <span><%= f.submit 'Post', class: 'post-btn' %></span>
+              <span class="share-btn"><i class="fa fa-home"></i>&nbsp;<%= link_to 'Share', '', remote: true %></span>
+            </span>
+            </div>
+          </div>
+          <div class="col-mda-12" id="thumbnail-div">
+          </div>
+        </div>
+    <% end %>
+  </div>
+  <div class="post_data">
+    <% @posts = @team.posts.order(updated_at: :desc).where(for_team: true) %>
+    <%if @posts.present?%>
+      <%@posts.each do |post|%>
+        <div class="col-md-9 col-md-offset-1" id=<%=post.id%>>
+          <%=render partial: 'post', locals: { post: post } %>
+        </div>
+      <%end%>
+    <%end%>
+  </div>
+</div>
